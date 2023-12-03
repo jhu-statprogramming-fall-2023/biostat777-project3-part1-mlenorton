@@ -1,0 +1,78 @@
+---
+title: "Example data analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example data analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(animation)
+library(tidyverse)
+library(here)
+```
+
+
+
+# my ideas for animations:
+1. brownian motion demo (https://yihui.org/animation/example/brownian-motion/)
+2. least squares demo ()
+1. use bootstrapping of iid data (boot.iid(): https://yihui.org/animation/example/boot-iid/)
+2. use lm (least squares demo) or glm (newton raphson) to answer some question
+or 3. k-fold cross-valiation (cv.ani(x = runif(15), k = 15): https://yihui.org/animation/example/cv-ani/)
+
+
+
+### Question  
+
+How much has average global temperature changed from 1880 to present? Are there seasonal or geographic patterns embedded in these changes?
+
+
+### Data  
+
+Data were discovered via [TidyTuesday (2023-07-11)](https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-07-11). These data include global surface temperature observations from NASA from 1880 to 2023. The temperature anomalies (i.e. deviations from the average) are relative to 1951-1980 average temperatures. The data dictionary is available [here](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-07-11/readme.md#data-dictionary).
+
+
+
+```{r, class.source = 'fold-show'}
+# List required files to download from TidyTuesday
+rds_files <- c("global_temps.rds", "nh_temps.rds","sh_temps.rds","zonann_temps.rds")
+
+# Check if any of these files don't exist
+if (any(!file.exists(here("data", rds_files)))) {
+  # if data directory doesn't exist, make it
+  if (!dir.exists(here("data"))) {
+  dir.create(here("data")) }
+
+# if files are missing, download the data
+tuesdata <- tidytuesdayR::tt_load('2023-07-11')
+
+global_temps <- tuesdata$global_temps
+nh_temps <- tuesdata$nh_temps
+sh_temps <- tuesdata$sh_temps
+zonann_temps <- tuesdata$zonann_temps
+
+
+# save the data object as a .csv file
+saveRDS(global_temps, file = here("data","global_temps.rds"), version = 2)
+saveRDS(nh_temps, file = here("data","nh_temps.rds"), version = 2)
+saveRDS(sh_temps, file = here("data","sh_temps.rds"), version = 2)
+saveRDS(zonann_temps, file = here("data","zonann_temps.rds"), version = 2)
+
+}
+
+# Load data
+global_temps <- readRDS(here("data","global_temps.rds"))
+nh_temps <- readRDS(here("data","nh_temps.rds"))
+sh_temps <- readRDS(here("data","sh_temps.rds"))
+zonann_temps <- readRDS(here("data","zonann_temps.rds"))
+
+```
