@@ -14,10 +14,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, echo=FALSE, message=FALSE}
 library(animation)
 library(tidyverse)
 library(here)
+#library(magick)
+# installed ffmpeg to show .gifs
 ```
 
 
@@ -34,6 +36,14 @@ or 3. k-fold cross-valiation (cv.ani(x = runif(15), k = 15): https://yihui.org/a
 ### Question  
 
 How much has average global temperature changed from 1880 to present? Are there seasonal or geographic patterns embedded in these changes?
+
+```{r, fig.cap="Brownian motion is proportional to temperature. The warmer a substance is, the faster the particles move.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+ani.options(interval = 0.01, nmax = 150)
+brownian.motion(pch = 21, cex = 5, col = "green", bg = "#0072B2", main = "Demonstration of Brownian Motion")
+#saveGIF(brownian.motion(pch = 21, cex = 5, col = "darkgreen", bg = "#0072B2", main = "Demonstration of Brownian Motion"), movie.name="brownian_motion.gif")
+
+```
+
 
 
 ### Data  
@@ -76,3 +86,147 @@ sh_temps <- readRDS(here("data","sh_temps.rds"))
 zonann_temps <- readRDS(here("data","zonann_temps.rds"))
 
 ```
+
+
+```{r}
+# Wrangle data
+zonann_temps_longer <- zonann_temps %>%
+  pivot_longer(cols="Glob":"90S-64S",
+               names_to="lat_band",
+               values_to="ano")
+
+
+```
+
+
+
+```{r, fig.cap="Mean global temperature anomalies from 1880 to 2023, relative to 1951-1980 means. Temperature has increased in a non-linear way.", fig.width=7, fig.height=6}
+# Plot data
+zonann_temps_longer %>% 
+  filter(lat_band=="Glob") %>%
+  ggplot(aes(x = Year, y = ano)) +
+  geom_line() +
+  geom_smooth() +
+  theme_minimal() +
+  labs(y = "Global temperature anomaly (°C)",
+       title = "Global temperature anomaly from 1880 to 2023",
+       subtitle = "Global temperature has increased >1 °C since 1880",
+       caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)")
+
+
+
+```
+
+
+
+```{r, fig.cap="Temperature anomalies from 1880 to 2023, relative to 1951-1980 means, in three latitudinal bands. Temperature increases differ by magnitude and rate in different locations.", fig.width=7, fig.height=6}
+zonann_temps_longer %>%
+  filter(lat_band %in% c("24N-90N","24S-24N","90S-24S")) %>%
+  ggplot(aes(x = Year, y = ano)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~lat_band, nrow=3) +
+  labs(y = "Temperature anomaly (°C)",
+       title = "Temperature change by latitudinal band",
+       subtitle = "Temperate and polar regions in the northern hemisphere experienced the largest swings \nand overall temperature change.",
+       caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)") +
+  theme_minimal()
+  
+
+# # option 2
+# zonann_temps_longer %>%
+#   filter(lat_band %in% c("64N-90N", "44N-64N", "24N-44N", "EQU-24N", "24S-EQU", "44S-24S", "64S-44S", "90S-64S")) %>%
+#   ggplot(aes(x = Year, y = ano)) +
+#   geom_point() +
+#   geom_line() +
+#   facet_wrap(~lat_band, nrow=8) +
+#   labs(y = "Temperature anomaly (°C)",
+#        title = "Temperature change by latitudinal band",
+#        subtitle = "",
+#        caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)") +
+#   theme_minimal()
+
+```
+
+Based on our plots, it appears that we have had a roughly linear increase in temperature from ~1970s to present. Let's use a linear model to estimate how fast temperature has increased over that period.
+
+But first, let's review how a linear regression model is fit based on minimizing least squares loss function.
+
+
+```{r, fig.cap="Demonstration of least squares minimization to fit the slope in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+# Demo: least squares 
+par(mar = c(5, 4, 0.5, 0.1))
+ani.options(interval = 0.3, nmax = 50)
+
+## default animation: with slope changing
+least.squares()
+
+```
+
+```{r, fig.cap="Demonstration of least squares minimization to fit the intercept in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+# Demo: least squares 
+par(mar = c(5, 4, 0.5, 0.1))
+ani.options(interval = 0.3, nmax = 50)
+
+## intercept changing
+least.squares(ani.type = "intercept")
+
+```
+
+
+Ok, now let's fit our model.
+
+```{r}
+global_temp_df <- zonann_temps_longer %>%
+  filter(lat_band=="Glob",
+         Year>=1970)
+
+temp.lm <- lm(ano ~ Year, data = global_temp_df)
+
+#summary(temp.lm)
+#plot(temp.lm)
+
+# test quadratic model
+# temp2.lm <- lm(ano ~ Year + I(Year*Year), data=global_temp_df)
+
+global_temp_df$Predicted <- predict.lm(temp.lm, data = as.data.frame(seq(1970, 2023,1)))
+
+
+```
+
+
+```{r, fig.cap="Observed and predicted global temperature anomalies from 1970 to 2023, relative to 1951-1980 means. Temperature has increased in an approximately linear way over the past 50 years.", fig.width=7, fig.height=6}
+global_temp_df_plotting <- global_temp_df %>%
+  pivot_longer(ano:Predicted,
+               names_to = "data_type",
+               values_to = "value") %>%
+  mutate(data_type = case_when(
+    data_type == "ano" ~ "Observed",
+    TRUE ~ data_type
+  ))
+  
+  
+global_temp_df_plotting %>%
+  ggplot(aes(x=Year, y = value, group = data_type, color = data_type)) +
+  geom_line() +
+  labs(y = "Temperature anomaly (°C)",
+       title = "Global temperature change from 1970 to 2023",
+       subtitle = "In recent years, global temperature has increased an average of ~0.02 °C per year.",
+       caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)",
+       color = "Data type") +
+   theme_minimal()
+  
+
+```
+
+
+### Summary  
+
+
+
+### Functions used
+
+dplyr: pivot_longer, filter,
+stringr: 
+purrr:
+ggplot2: geom_smooth, geom_line, geom_point
