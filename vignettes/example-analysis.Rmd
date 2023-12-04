@@ -128,9 +128,9 @@ zonann_temps_longer %>%
 zonann_temps_longer %>%
   filter(lat_band %in% c("24N-90N","24S-24N","90S-24S")) %>%
   ggplot(aes(x = Year, y = ano)) +
+  geom_rect(aes(xmin=1951, xmax=1980, ymin=-0.5, ymax=0.5), fill = "lightblue", alpha=0.01) +
   geom_point() +
   geom_line() +
-  geom_rect(aes(xmin=1951, xmax=1980, ymin=-0.5, ymax=0.5), fill = "lightblue", alpha=0.01) +
   facet_wrap(~lat_band, nrow=3) +
   labs(y = "Temperature anomaly (°C)",
        title = "Temperature change by latitudinal band",

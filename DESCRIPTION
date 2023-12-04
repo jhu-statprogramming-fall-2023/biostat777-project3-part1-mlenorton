@@ -28,10 +28,13 @@ Imports:
 Suggests:
     MASS,
     class,
-    testit
+    testit,
+    knitr,
+    rmarkdown
 License: GPL
 URL: https://yihui.org/animation/
 BugReports: https://github.com/yihui/animation/issues
 LazyData: yes
 Encoding: UTF-8
 RoxygenNote: 7.1.2
+VignetteBuilder: knitr
