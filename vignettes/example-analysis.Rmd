@@ -26,26 +26,30 @@ library(purrr)
 
 ### Question  
 
-How has global temperature changed from 1880 to present? Are there temporal and geographic differences associated with temperature change? Can we model temperature increase linearly in recent years? 
+How has global temperature changed from 1880 to present? Are there temporal and geographic differences associated with temperature change? Is temperature change approximately linear in recent years? 
 
-```{r, fig.cap="The rate of Brownian motion is proportional to the temperature of a material. The warmer it is, the faster the particles move.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+> ℹ️ Brownian motion
+>
+> Recall that the rate of Brownian motion is proportional to the temperature of a material. The warmer a substance is, the faster its particles move.
+
+
+```{r, fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+# First function call from animation package
 ani.options(interval = 0.01, nmax = 150)
 brownian.motion(pch = 21, 
                 cex = 5, 
                 col = "green", 
                 bg = "#0072B2", 
-                main = "Demonstration of Brownian Motion")
-#saveGIF(brownian.motion(pch = 21, cex = 5, col = "darkgreen", bg = "#0072B2", main = "Demonstration of Brownian Motion"), movie.name="brownian_motion.gif")
+                main = "Demo: Brownian Motion")
 
 ```
 
 ### Data  
 
-Data were discovered via [TidyTuesday (2023-07-11)](https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-07-11). These data include global surface temperature observations from NASA from 1880 to 2023. The temperature anomalies (i.e. deviations from the average) are relative to 1951-1980 average temperatures. The data dictionary is available [here](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-07-11/readme.md#data-dictionary).
+Global surface temperature observations for 1880 to 2022 came from NASA GISS Surface Temperature Analysis (GISTEMP v4). The temperature anomalies (i.e. deviations from the mean) are relative to 1951-1980 average temperatures. The data were downloaded via [TidyTuesday (2023-07-11)](https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-07-11). The data dictionary is available [here](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-07-11/readme.md#data-dictionary).
 
 
-
-```{r, class.source = 'fold-show'}
+```{r}
 # List required files to download from TidyTuesday
 rds_files <- c("global_temps.rds", "nh_temps.rds","sh_temps.rds","zonann_temps.rds")
 
@@ -63,13 +67,11 @@ nh_temps <- tuesdata$nh_temps
 sh_temps <- tuesdata$sh_temps
 zonann_temps <- tuesdata$zonann_temps
 
-
 # save the data object as a .csv file
 saveRDS(global_temps, file = here("data","global_temps.rds"), version = 2)
 saveRDS(nh_temps, file = here("data","nh_temps.rds"), version = 2)
 saveRDS(sh_temps, file = here("data","sh_temps.rds"), version = 2)
 saveRDS(zonann_temps, file = here("data","zonann_temps.rds"), version = 2)
-
 }
 
 # Load data
@@ -82,37 +84,47 @@ zonann_temps <- readRDS(here("data","zonann_temps.rds"))
 
 
 ```{r}
-# Wrangle data
+# Begin wrangling data
 zonann_temps_longer <- zonann_temps %>%
-  pivot_longer(cols="Glob":"90S-64S",
+  rename("Global" = "Glob") %>%
+  pivot_longer(cols="Global":"90S-64S",
                names_to="lat_band",
                values_to="ano")
 
+# Calculate ~smoothed difference in temperature over the entire record
+my_diff <- function(x) {
+  beg <- mean(head(x))
+  end <- mean(tail(x))
+  diff <- end - beg
+}
+
+temp_diffs <- zonann_temps %>%
+  map(.f = my_diff)
 
 ```
 
+### Global temperature change
+Global temperature has increased by more than 1°C between 1880 and 2022. Temperature has increased in a non-linear way, with the fastest rates observed in recent years. 
 
-
-```{r, fig.cap="Mean global temperature anomalies from 1880 to 2023, relative to 1951-1980 means. Temperature has increased in a non-linear way.", fig.width=7, fig.height=6}
+```{r, fig.cap="Figure 1. Mean global temperature anomalies from 1880 to 2022, relative to 1951-1980 means.", fig.width=7, fig.height=6}
 # Plot data
 zonann_temps_longer %>% 
-  filter(lat_band=="Glob") %>%
+  filter(lat_band=="Global") %>%
   ggplot(aes(x = Year, y = ano)) +
   geom_line() +
   geom_smooth() +
   theme_minimal() +
   labs(y = "Global temperature anomaly (°C)",
-       title = "Global temperature anomaly from 1880 to 2023",
-       subtitle = "Global temperature has increased >1 °C since 1880",
+       title = "Global temperature anomaly from 1880 to 2022",
+       subtitle = "Global temperature has increased ~1.1°C since 1880",
        caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)")
-
 
 
 ```
 
+### Temperature change by latitudinal band
 
-
-```{r, fig.cap="Temperature anomalies from 1880 to 2023 in three latitudinal bands. Anomalies are relative to average temperatures from 1951-1980 (shaded in periwinkle). The overall magnitude and rate of temperature increase varies across latitudes.", fig.width=7, fig.height=6}
+```{r, fig.cap="Figure 2. Temperature anomalies from 1880 to 2022 in three latitudinal bands. Anomalies are relative to average temperatures from 1951-1980 (shaded in periwinkle). The overall magnitude and rate of temperature increase varies across latitudes.", fig.width=7, fig.height=6}
 zonann_temps_longer %>%
   filter(lat_band %in% c("24N-90N","24S-24N","90S-24S")) %>%
   ggplot(aes(x = Year, y = ano)) +
@@ -122,11 +134,11 @@ zonann_temps_longer %>%
   facet_wrap(~lat_band, nrow=3) +
   labs(y = "Temperature anomaly (°C)",
        title = "Temperature change by latitudinal band",
-       subtitle = "Temperate and polar regions in the northern hemisphere experienced the largest swings \nand overall temperature change.",
+       subtitle = "Temperate and polar regions in the northern hemisphere (24-90N) experienced \nhigher variability and larger overall temperature change.",
        caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)") +
   theme_minimal()
   
-# Calculate average anomaly for each column (i.e. different areas/latitude bands) in recent past (1970-2023)
+# Calculate average anomaly for each column (i.e. different areas/latitude bands) in recent past (1970-2022)
 mean_anos_by_lat_band <- zonann_temps %>%
   filter(Year>=1970) %>%
   select(-Year) %>%
@@ -134,12 +146,18 @@ mean_anos_by_lat_band <- zonann_temps %>%
 
 ```
 
-Based on our plots, it appears that we have had a roughly linear increase in temperature from ~1970s to present. Let's use a linear model to estimate how fast temperature has increased over that period.
+Based on Figures 1 and 2, it appears that temperature has increased in a roughly linear fashion from ~1970s to present, and this period accounts for nearly half of the observed temperature change over the entire 142 year record! We also notice that the recent temperature increase has been larger in the more northern latitudes (24-90N: 0.585°C) compared to the mid-latitudes (24S-24N: 0.400°C) or the southern latitudes (24-90S: 0.355°C). 
 
-But first, let's review how a linear regression model is fit based on minimizing least squares loss function.
+### Linear regression
+Given the approximately linear relationship between global temperature change and recent time (1970 to 2022), let's use a linear model to estimate how fast global temperature has increased.
+
+> ℹ️ Least squares
+>
+> Recall that linear regression minimizes a least squares loss function to estimate the slope and intercept parameters.
 
 
 ```{r, fig.cap="Demonstration of least squares minimization to fit the slope in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+# Second function call from animation package
 # Demo: least squares 
 par(mar = c(5, 4, 2, 0.1))
 ani.options(interval = 0.3, nmax = 50)
@@ -150,6 +168,7 @@ least.squares(main = "Demo: Fit slope")
 ```
 
 ```{r, fig.cap="Demonstration of least squares minimization to fit the intercept in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+# Third function call from animation package
 # Demo: least squares 
 par(mar = c(5, 4, 2, 0.1))
 ani.options(interval = 0.3, nmax = 50)
@@ -161,11 +180,9 @@ least.squares(ani.type = "intercept",
 ```
 
 
-Ok, now let's fit our model.
-
 ```{r}
 global_temp_df <- zonann_temps_longer %>%
-  filter(lat_band=="Glob",
+  filter(lat_band=="Global",
          Year>=1970)
 
 temp.lm <- lm(ano ~ Year, data = global_temp_df)
@@ -173,16 +190,12 @@ temp.lm <- lm(ano ~ Year, data = global_temp_df)
 #summary(temp.lm)
 #plot(temp.lm)
 
-# test quadratic model
-# temp2.lm <- lm(ano ~ Year + I(Year*Year), data=global_temp_df)
-
-global_temp_df$Predicted <- predict.lm(temp.lm, data = as.data.frame(seq(1970, 2023,1)))
-
+global_temp_df$Predicted <- predict.lm(temp.lm, data = as.data.frame(seq(1970, 2022,1)))
 
 ```
 
 
-```{r, fig.cap="Observed and predicted global temperature anomalies from 1970 to 2023, relative to 1951-1980 means. Temperature has increased in an approximately linear way over the past 50 years.", fig.width=7, fig.height=6}
+```{r, fig.cap="Figure 3. Observed and predicted global temperature anomalies from 1970 to 2022, relative to 1951-1980 means. Temperature has increased in an approximately linear way over the past 50 years.", fig.width=7, fig.height=6}
 global_temp_df_plotting <- global_temp_df %>%
   pivot_longer(ano:Predicted,
                names_to = "data_type",
@@ -198,26 +211,24 @@ global_temp_df_plotting %>%
   ggplot(aes(x=Year, y = value, group = data_type, color = data_type)) +
   geom_line() +
   labs(y = "Temperature anomaly (°C)",
-       title = "Global temperature change from 1970 to 2023",
+       title = "Global temperature change from 1970 to 2022",
        subtitle = "In recent years, global temperature has increased an average of ~0.02 °C per year.",
        caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)",
        color = "Data type") +
    theme_minimal()
   
-
 ```
 
 
-
 ### Summary  
-
+In summary, we see that global temperature has increased more than 1°C from 1880 to 2022. In recent years (1970-present), the increase has been approximately linear, changing at a rate of ~0.02°C per year! However, given the non-linear trends observed over the whole record, we might reasonably expect that warming rates will continue to accelerate in the near future.
 
 
 ### Functions used
 
-dplyr: pivot_longer, filter, mutate, case_when, select
-purrr: map_dbl, 
-ggplot2: geom_smooth, geom_line, geom_point
+dplyr: rename, pivot_longer, filter, mutate, case_when, select
+purrr: map, map_dbl
+ggplot2: geom_smooth, geom_line, geom_point, geom_rect
 animation: least.squares, brownian.motion
 
 ### TODO:
