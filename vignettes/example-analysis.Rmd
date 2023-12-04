@@ -1,6 +1,8 @@
 ---
 title: "Example data analysis"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    code_folding: hide
 vignette: >
   %\VignetteIndexEntry{Example data analysis}
   %\VignetteEngine{knitr::rmarkdown}
@@ -18,33 +20,24 @@ knitr::opts_chunk$set(
 library(animation)
 library(tidyverse)
 library(here)
-#library(magick)
+library(purrr)
 # installed ffmpeg to show .gifs
 ```
 
-
-
-# my ideas for animations:
-1. brownian motion demo (https://yihui.org/animation/example/brownian-motion/)
-2. least squares demo ()
-1. use bootstrapping of iid data (boot.iid(): https://yihui.org/animation/example/boot-iid/)
-2. use lm (least squares demo) or glm (newton raphson) to answer some question
-or 3. k-fold cross-valiation (cv.ani(x = runif(15), k = 15): https://yihui.org/animation/example/cv-ani/)
-
-
-
 ### Question  
 
-How much has average global temperature changed from 1880 to present? Are there seasonal or geographic patterns embedded in these changes?
+How has global temperature changed from 1880 to present? Are there temporal and geographic differences associated with temperature change? Can we model temperature increase linearly in recent years? 
 
-```{r, fig.cap="Brownian motion is proportional to temperature. The warmer a substance is, the faster the particles move.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+```{r, fig.cap="The rate of Brownian motion is proportional to the temperature of a material. The warmer it is, the faster the particles move.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
 ani.options(interval = 0.01, nmax = 150)
-brownian.motion(pch = 21, cex = 5, col = "green", bg = "#0072B2", main = "Demonstration of Brownian Motion")
+brownian.motion(pch = 21, 
+                cex = 5, 
+                col = "green", 
+                bg = "#0072B2", 
+                main = "Demonstration of Brownian Motion")
 #saveGIF(brownian.motion(pch = 21, cex = 5, col = "darkgreen", bg = "#0072B2", main = "Demonstration of Brownian Motion"), movie.name="brownian_motion.gif")
 
 ```
-
-
 
 ### Data  
 
@@ -119,12 +112,13 @@ zonann_temps_longer %>%
 
 
 
-```{r, fig.cap="Temperature anomalies from 1880 to 2023, relative to 1951-1980 means, in three latitudinal bands. Temperature increases differ by magnitude and rate in different locations.", fig.width=7, fig.height=6}
+```{r, fig.cap="Temperature anomalies from 1880 to 2023 in three latitudinal bands. Anomalies are relative to average temperatures from 1951-1980 (shaded in periwinkle). The overall magnitude and rate of temperature increase varies across latitudes.", fig.width=7, fig.height=6}
 zonann_temps_longer %>%
   filter(lat_band %in% c("24N-90N","24S-24N","90S-24S")) %>%
   ggplot(aes(x = Year, y = ano)) +
   geom_point() +
   geom_line() +
+  geom_rect(aes(xmin=1951, xmax=1980, ymin=-0.5, ymax=0.5), fill = "lightblue", alpha=0.01) +
   facet_wrap(~lat_band, nrow=3) +
   labs(y = "Temperature anomaly (°C)",
        title = "Temperature change by latitudinal band",
@@ -132,19 +126,11 @@ zonann_temps_longer %>%
        caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)") +
   theme_minimal()
   
-
-# # option 2
-# zonann_temps_longer %>%
-#   filter(lat_band %in% c("64N-90N", "44N-64N", "24N-44N", "EQU-24N", "24S-EQU", "44S-24S", "64S-44S", "90S-64S")) %>%
-#   ggplot(aes(x = Year, y = ano)) +
-#   geom_point() +
-#   geom_line() +
-#   facet_wrap(~lat_band, nrow=8) +
-#   labs(y = "Temperature anomaly (°C)",
-#        title = "Temperature change by latitudinal band",
-#        subtitle = "",
-#        caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)") +
-#   theme_minimal()
+# Calculate average anomaly for each column (i.e. different areas/latitude bands) in recent past (1970-2023)
+mean_anos_by_lat_band <- zonann_temps %>%
+  filter(Year>=1970) %>%
+  select(-Year) %>%
+  map_dbl(.f= mean)
 
 ```
 
@@ -155,21 +141,22 @@ But first, let's review how a linear regression model is fit based on minimizing
 
 ```{r, fig.cap="Demonstration of least squares minimization to fit the slope in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
 # Demo: least squares 
-par(mar = c(5, 4, 0.5, 0.1))
+par(mar = c(5, 4, 2, 0.1))
 ani.options(interval = 0.3, nmax = 50)
 
 ## default animation: with slope changing
-least.squares()
+least.squares(main = "Demo: Fit slope")
 
 ```
 
 ```{r, fig.cap="Demonstration of least squares minimization to fit the intercept in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
 # Demo: least squares 
-par(mar = c(5, 4, 0.5, 0.1))
+par(mar = c(5, 4, 2, 0.1))
 ani.options(interval = 0.3, nmax = 50)
 
 ## intercept changing
-least.squares(ani.type = "intercept")
+least.squares(ani.type = "intercept",
+              main = "Demo: Fit intercept")
 
 ```
 
@@ -203,7 +190,8 @@ global_temp_df_plotting <- global_temp_df %>%
   mutate(data_type = case_when(
     data_type == "ano" ~ "Observed",
     TRUE ~ data_type
-  ))
+  )) %>%
+  select(-lat_band)
   
   
 global_temp_df_plotting %>%
@@ -220,13 +208,18 @@ global_temp_df_plotting %>%
 ```
 
 
+
 ### Summary  
 
 
 
 ### Functions used
 
-dplyr: pivot_longer, filter,
-stringr: 
-purrr:
+dplyr: pivot_longer, filter, mutate, case_when, select
+purrr: map_dbl, 
 ggplot2: geom_smooth, geom_line, geom_point
+animation: least.squares, brownian.motion
+
+### TODO:
+add purrr functions, 1 more dplyr/stringr functions, add explanatory text, add code-folding?
+
