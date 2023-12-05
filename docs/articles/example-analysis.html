@@ -99,8 +99,9 @@ particles move.</p>
 <span>                cex <span class="op">=</span> <span class="fl">5</span>, </span>
 <span>                col <span class="op">=</span> <span class="st">"green"</span>, </span>
 <span>                bg <span class="op">=</span> <span class="st">"#0072B2"</span>, </span>
-<span>                main <span class="op">=</span> <span class="st">"Demo: Brownian Motion"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="example-analysis_files/figure-html/unnamed-chunk-2.gif" width="576"></p>
+<span>                main <span class="op">=</span> <span class="st">"Demo: Brownian Motion"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/saveGIF.html">saveGIF</a></span><span class="op">(</span><span class="fu"><a href="../reference/brownian.motion.html">brownian.motion</a></span><span class="op">(</span>pch <span class="op">=</span> <span class="fl">21</span>, cex <span class="op">=</span> <span class="fl">5</span>, col <span class="op">=</span> <span class="st">"green"</span>, bg <span class="op">=</span> <span class="st">"#0072B2"</span>, main <span class="op">=</span> <span class="st">"Demonstration of Brownian Motion"</span><span class="op">)</span>, movie.name<span class="op">=</span><span class="st">"brownian_motion.gif"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="brownian_motion.gif" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
@@ -128,7 +129,7 @@ average temperatures. The data were downloaded via <a href="https://github.com/r
 <span><span class="va">sh_temps</span> <span class="op">&lt;-</span> <span class="va">tuesdata</span><span class="op">$</span><span class="va">sh_temps</span></span>
 <span><span class="va">zonann_temps</span> <span class="op">&lt;-</span> <span class="va">tuesdata</span><span class="op">$</span><span class="va">zonann_temps</span></span>
 <span></span>
-<span><span class="co"># save the data object as a .csv file</span></span>
+<span><span class="co"># save the data object as a .rds file</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">global_temps</span>, file <span class="op">=</span> <span class="fu">here</span><span class="op">(</span><span class="st">"data"</span>,<span class="st">"global_temps.rds"</span><span class="op">)</span>, version <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">nh_temps</span>, file <span class="op">=</span> <span class="fu">here</span><span class="op">(</span><span class="st">"data"</span>,<span class="st">"nh_temps.rds"</span><span class="op">)</span>, version <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">sh_temps</span>, file <span class="op">=</span> <span class="fu">here</span><span class="op">(</span><span class="st">"data"</span>,<span class="st">"sh_temps.rds"</span><span class="op">)</span>, version <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -178,7 +179,7 @@ rates observed in recent years.</p>
 <span>       caption <span class="op">=</span> <span class="st">"Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span></span></code></pre></div>
 <div class="figure">
-<img src="example-analysis_files/figure-html/unnamed-chunk-5-1.png" alt="Figure 1. Mean global temperature anomalies from 1880 to 2022, relative to 1951-1980 means." width="672"><p class="caption">
+<img src="example-analysis_files/figure-html/unnamed-chunk-6-1.png" alt="Figure 1. Mean global temperature anomalies from 1880 to 2022, relative to 1951-1980 means." width="672"><p class="caption">
 Figure 1. Mean global temperature anomalies from 1880 to 2022, relative
 to 1951-1980 means.
 </p>
@@ -191,9 +192,9 @@ to 1951-1980 means.
 <code class="sourceCode R"><span><span class="va">zonann_temps_longer</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">lat_band</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"24N-90N"</span>,<span class="st">"24S-24N"</span>,<span class="st">"90S-24S"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Year</span>, y <span class="op">=</span> <span class="va">ano</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_rect</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>xmin<span class="op">=</span><span class="fl">1951</span>, xmax<span class="op">=</span><span class="fl">1980</span>, ymin<span class="op">=</span><span class="op">-</span><span class="fl">0.5</span>, ymax<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"lightblue"</span>, alpha<span class="op">=</span><span class="fl">0.01</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_rect</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>xmin<span class="op">=</span><span class="fl">1951</span>, xmax<span class="op">=</span><span class="fl">1980</span>, ymin<span class="op">=</span><span class="op">-</span><span class="fl">0.5</span>, ymax<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"lightblue"</span>, alpha<span class="op">=</span><span class="fl">0.01</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">lat_band</span>, nrow<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Temperature anomaly (°C)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Temperature change by latitudinal band"</span>,</span>
@@ -201,7 +202,7 @@ to 1951-1980 means.
 <span>       caption <span class="op">=</span> <span class="st">"Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-analysis_files/figure-html/unnamed-chunk-6-1.png" alt="Figure 2. Temperature anomalies from 1880 to 2022 in three latitudinal bands. Anomalies are relative to average temperatures from 1951-1980 (shaded in periwinkle). The overall magnitude and rate of temperature increase varies across latitudes." width="672"><p class="caption">
+<img src="example-analysis_files/figure-html/unnamed-chunk-7-1.png" alt="Figure 2. Temperature anomalies from 1880 to 2022 in three latitudinal bands. Anomalies are relative to average temperatures from 1951-1980 (shaded in periwinkle). The overall magnitude and rate of temperature increase varies across latitudes." width="672"><p class="caption">
 Figure 2. Temperature anomalies from 1880 to 2022 in three latitudinal
 bands. Anomalies are relative to average temperatures from 1951-1980
 (shaded in periwinkle). The overall magnitude and rate of temperature
@@ -241,12 +242,8 @@ to estimate the slope and intercept parameters.</p>
 <span><span class="fu"><a href="../reference/ani.options.html">ani.options</a></span><span class="op">(</span>interval <span class="op">=</span> <span class="fl">0.3</span>, nmax <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## default animation: with slope changing</span></span>
-<span><span class="fu"><a href="../reference/least.squares.html">least.squares</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Demo: Fit slope"</span><span class="op">)</span></span></code></pre></div>
-<img src="example-analysis_files/figure-html/unnamed-chunk-7.gif" alt="Demonstration of least squares minimization to fit the slope in linear regression." width="576"><p class="caption">
-Demonstration of least squares minimization to fit the slope in linear
-regression.
-</p>
-</div>
+<span><span class="fu"><a href="../reference/least.squares.html">least.squares</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Demo: Fit slope"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/saveGIF.html">saveGIF</a></span><span class="op">(</span><span class="fu"><a href="../reference/least.squares.html">least.squares</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Demo: Fit slope"</span><span class="op">)</span>, movie.name<span class="op">=</span><span class="st">"least_squares_slope.gif"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Third function call from animation package</span></span>
 <span><span class="co"># Demo: least squares </span></span>
@@ -255,13 +252,11 @@ regression.
 <span></span>
 <span><span class="co">## intercept changing</span></span>
 <span><span class="fu"><a href="../reference/least.squares.html">least.squares</a></span><span class="op">(</span>ani.type <span class="op">=</span> <span class="st">"intercept"</span>,</span>
-<span>              main <span class="op">=</span> <span class="st">"Demo: Fit intercept"</span><span class="op">)</span></span></code></pre></div>
-<img src="example-analysis_files/figure-html/unnamed-chunk-8.gif" alt="Demonstration of least squares minimization to fit the intercept in linear regression." width="576"><p class="caption">
-Demonstration of least squares minimization to fit the intercept in
-linear regression.
-</p>
-</main>
-</div>
+<span>              main <span class="op">=</span> <span class="st">"Demo: Fit intercept"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/saveGIF.html">saveGIF</a></span><span class="op">(</span><span class="fu"><a href="../reference/least.squares.html">least.squares</a></span><span class="op">(</span>ani.type <span class="op">=</span> <span class="st">"intercept"</span>,</span>
+<span>              main <span class="op">=</span> <span class="st">"Demo: Fit intercept"</span><span class="op">)</span>, movie.name<span class="op">=</span><span class="st">"least_squares_intercept.gif"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="least_squares_slope.gif" width="100%"></p>
+<p><img src="least_squares_intercept.gif" width="100%"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">global_temp_df</span> <span class="op">&lt;-</span> <span class="va">zonann_temps_longer</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">lat_band</span><span class="op">==</span><span class="st">"Global"</span>,</span>
@@ -295,7 +290,7 @@ linear regression.
 <span>       color <span class="op">=</span> <span class="st">"Data type"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>   <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="example-analysis_files/figure-html/unnamed-chunk-10-1.png" alt="Figure 3. Observed and predicted global temperature anomalies from 1970 to 2022, relative to 1951-1980 means. Temperature has increased in an approximately linear way over the past 50 years." width="672"><p class="caption">
+<img src="example-analysis_files/figure-html/unnamed-chunk-13-1.png" alt="Figure 3. Observed and predicted global temperature anomalies from 1970 to 2022, relative to 1951-1980 means. Temperature has increased in an approximately linear way over the past 50 years." width="672"><p class="caption">
 Figure 3. Observed and predicted global temperature anomalies from 1970
 to 2022, relative to 1951-1980 means. Temperature has increased in an
 approximately linear way over the past 50 years.
@@ -315,9 +310,9 @@ in the near future.</p>
 <div class="section level3">
 <h3 id="functions-used">Functions used<a class="anchor" aria-label="anchor" href="#functions-used"></a>
 </h3>
-<p>dplyr: rename, pivot_longer, filter, mutate, case_when, select purrr:
-map, map_dbl ggplot2: geom_smooth, geom_line, geom_point, geom_rect
-animation: least.squares, brownian.motion</p>
+<p>dplyr: rename, filter, mutate, case_when, select tidyr: pivot_longer
+purrr: map, map_dbl ggplot2: geom_smooth, geom_line, geom_point,
+geom_rect animation: least.squares, brownian.motion</p>
 </div>
 <div class="section level3">
 <h3 id="todo">TODO:<a class="anchor" aria-label="anchor" href="#todo"></a>
@@ -325,8 +320,13 @@ animation: least.squares, brownian.motion</p>
 <p>add purrr functions, 1 more dplyr/stringr functions, add explanatory
 text, add code-folding?</p>
 </div>
-  <aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
-    </nav></aside><footer><div class="pkgdown-footer-left">
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
+</div>
+
+
+
+    <footer><div class="pkgdown-footer-left">
   <p></p>
 <p>Developed by Yihui Xie.</p>
 </div>
@@ -337,5 +337,11 @@ text, add code-folding?</p>
 </div>
 
     </footer>
-</body>
+</div>
+
+  
+
+  
+
+  </body>
 </html>
