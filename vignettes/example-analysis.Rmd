@@ -164,7 +164,7 @@ Given the approximately linear relationship between global temperature change an
 > Recall that linear regression minimizes a least squares loss function to estimate the slope and intercept parameters.
 
 
-```{r, fig.cap="Demonstration of least squares minimization to fit the slope in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+```{r, eval=FALSE, fig.cap="Demonstration of least squares minimization to fit the slope in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
 # Second function call from animation package
 # Demo: least squares 
 par(mar = c(5, 4, 2, 0.1))
@@ -172,10 +172,11 @@ ani.options(interval = 0.3, nmax = 50)
 
 ## default animation: with slope changing
 least.squares(main = "Demo: Fit slope")
+saveGIF(least.squares(main = "Demo: Fit slope"), movie.name="least_squares_slope.gif")
 
 ```
 
-```{r, fig.cap="Demonstration of least squares minimization to fit the intercept in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+```{r, eval=FALSE, fig.cap="Demonstration of least squares minimization to fit the intercept in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
 # Third function call from animation package
 # Demo: least squares 
 par(mar = c(5, 4, 2, 0.1))
@@ -184,9 +185,16 @@ ani.options(interval = 0.3, nmax = 50)
 ## intercept changing
 least.squares(ani.type = "intercept",
               main = "Demo: Fit intercept")
-
+saveGIF(least.squares(ani.type = "intercept",
+              main = "Demo: Fit intercept"), movie.name="least_squares_intercept.gif")
+```
+```{r, echo=FALSE, out.width = '100%'}
+knitr::include_graphics(here("vignettes","least_squares_slope.gif"), error = FALSE)
 ```
 
+```{r, echo=FALSE, out.width = '100%'}
+knitr::include_graphics(here("vignettes","least_squares_intercept.gif"), error = FALSE)
+```
 
 ```{r}
 global_temp_df <- zonann_temps_longer %>%
