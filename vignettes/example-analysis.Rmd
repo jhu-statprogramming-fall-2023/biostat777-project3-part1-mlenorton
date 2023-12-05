@@ -33,7 +33,7 @@ How has global temperature changed from 1880 to present? Are there temporal and 
 > Recall that the rate of Brownian motion is proportional to the temperature of a material. The warmer a substance is, the faster its particles move.
 
 
-```{r, fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
+```{r, eval=FALSE, fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
 # First function call from animation package
 ani.options(interval = 0.01, nmax = 150)
 brownian.motion(pch = 21, 
@@ -41,8 +41,14 @@ brownian.motion(pch = 21,
                 col = "green", 
                 bg = "#0072B2", 
                 main = "Demo: Brownian Motion")
+saveGIF(brownian.motion(pch = 21, cex = 5, col = "green", bg = "#0072B2", main = "Demonstration of Brownian Motion"), movie.name="brownian_motion.gif")
 
 ```
+
+```{r, echo=FALSE, out.width = '100%'}
+knitr::include_graphics(here("vignettes","brownian_motion.gif"), error = FALSE)
+```
+
 
 ### Data  
 
