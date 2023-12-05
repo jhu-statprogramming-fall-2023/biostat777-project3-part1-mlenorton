@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 library(animation)
 library(dplyr)
 library(ggplot2)
+library(tidyr)
 library(here)
 library(purrr)
 # installed ffmpeg to show .gifs
@@ -233,7 +234,8 @@ In summary, we see that global temperature has increased more than 1°C from 188
 
 ### Functions used
 
-dplyr: rename, pivot_longer, filter, mutate, case_when, select
+dplyr: rename, filter, mutate, case_when, select
+tidyr: pivot_longer
 purrr: map, map_dbl
 ggplot2: geom_smooth, geom_line, geom_point, geom_rect
 animation: least.squares, brownian.motion
