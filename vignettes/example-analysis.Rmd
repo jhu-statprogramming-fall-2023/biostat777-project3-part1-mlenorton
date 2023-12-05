@@ -67,7 +67,7 @@ nh_temps <- tuesdata$nh_temps
 sh_temps <- tuesdata$sh_temps
 zonann_temps <- tuesdata$zonann_temps
 
-# save the data object as a .csv file
+# save the data object as a .rds file
 saveRDS(global_temps, file = here("data","global_temps.rds"), version = 2)
 saveRDS(nh_temps, file = here("data","nh_temps.rds"), version = 2)
 saveRDS(sh_temps, file = here("data","sh_temps.rds"), version = 2)
