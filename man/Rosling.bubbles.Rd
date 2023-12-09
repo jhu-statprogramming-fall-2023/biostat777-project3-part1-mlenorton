@@ -68,7 +68,7 @@ of this matrix.
 Examples at \url{https://yihui.org/animation/example/rosling-bubbles/}
 
   TED talk: 
-  \url{https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen}
+  \url{http://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen.html}
 }
 \seealso{
 \code{\link{symbols}}

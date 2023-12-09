@@ -23,7 +23,7 @@ library(ggplot2)
 library(tidyr)
 library(here)
 library(purrr)
-# installed ffmpeg to show .gifs
+
 ```
 
 ### Question  
