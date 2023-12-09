@@ -5,6 +5,15 @@
 [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/animation)](https://cran.r-project.org/package=animation)
 <!-- badges: end -->
 
+## Update
+
+Original GitHub package source: https://github.com/yihui/animation
+pkgdown deployed website: https://jhu-statprogramming-fall-2023.github.io/biostat777-project3-part1-mlenorton/
+My 5 website customizations:
+-changed bootswatch to "lux" theme
+-changed height of navigation bar
+-change navigation bar theme
+
 ## Introduction
 
 This is an R package to create and export animations to a variety of formats
