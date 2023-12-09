@@ -32,7 +32,7 @@ How has global temperature changed from 1880 to present? Are there temporal and 
 
 > ℹ️ Brownian motion
 >
-> Recall that the rate of Brownian motion is proportional to the temperature of a material. The warmer a substance is, the faster its particles move.
+> Recall from your introductory physics class that the rate of Brownian motion is proportional to the temperature of a material. The warmer a substance is, the faster its particles move.
 
 
 ```{r, eval=FALSE, fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
@@ -161,7 +161,7 @@ Given the approximately linear relationship between global temperature change an
 
 > ℹ️ Least squares
 >
-> Recall that linear regression minimizes a least squares loss function to estimate the slope and intercept parameters.
+> Recall from your introductory statistics class that linear regression minimizes a least squares loss function to estimate the slope and intercept parameters.
 
 
 ```{r, eval=FALSE, fig.cap="Demonstration of least squares minimization to fit the slope in linear regression.", fig.show='animate', ffmpeg.format='gif', dev='jpeg', fig.width=6, fig.height=6}
@@ -237,17 +237,14 @@ global_temp_df_plotting %>%
 
 
 ### Summary  
-In summary, we see that global temperature has increased more than 1°C from 1880 to 2022. In recent years (1970-present), the increase has been approximately linear, changing at a rate of ~0.02°C per year! However, given the non-linear trends observed over the whole record, we might reasonably expect that warming rates will continue to accelerate in the near future.
+In summary, we see that global temperature has increased more than 1°C from 1880 to 2022. In recent years (1970-present), the increase has been approximately linear, changing at a rate of ~0.02°C per year! Additionally, given the non-linear trends observed over the whole record, we might reasonably expect that warming rates will continue to accelerate in the near future.
 
 
 ### Functions used
 
-dplyr: rename, filter, mutate, case_when, select
-tidyr: pivot_longer
-purrr: map, map_dbl
-ggplot2: geom_smooth, geom_line, geom_point, geom_rect
-animation: least.squares, brownian.motion
-
-### TODO:
-add purrr functions, 1 more dplyr/stringr functions, add explanatory text, add code-folding?
+dplyr: rename, filter, mutate, case_when, select  
+tidyr: pivot_longer  
+purrr: map, map_dbl  
+ggplot2: geom_smooth, geom_line, geom_point, geom_rect  
+animation: least.squares, brownian.motion, saveGIF  
 
