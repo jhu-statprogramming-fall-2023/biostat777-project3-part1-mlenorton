@@ -1,20 +1,20 @@
-# animation
+# animation <img src="man/figures/logo.png" align="right" height="200" style="float:right; height:200px;">
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/yihui/animation/workflows/R-CMD-check/badge.svg)](https://github.com/yihui/animation/actions)
 [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/animation)](https://cran.r-project.org/package=animation)
 <!-- badges: end -->
 
-## Update
+## Recent updates
 
 Original package via GitHub: https://github.com/yihui/animation  
 pkgdown deployed website: https://jhu-statprogramming-fall-2023.github.io/biostat777-project3-part1-mlenorton/  
 My 5 website customizations:  
 - changed bootswatch to "lux" theme  
 - changed height of navigation bar  
-- change navigation bar theme  
-- added a homemade hex sticker
-- 
+- changed navigation bar background color  
+- added a homemade hex sticker  
+- set size of hex sticker
 
 ## Introduction
 
@@ -45,11 +45,10 @@ Rd2roxygen::rab('animation', install = TRUE)
 ```
 ## Author
 
-*Maintainer*: Yihui Xie
-*Website developer and author of example analysis*: Emily Norton
+**Maintainer**: Yihui Xie  
+**Website developer and author of example analysis**: Emily Norton
 
 ## Exported functions with description
-Below is a list of examples available (here)[https://yihui.org/animation/example/] 
 
 ani.options(): Set or query animation options
 
@@ -140,15 +139,16 @@ vanke1127(): Stock price of Vanke
 vi.lilac.chaser(): Visual Illusions: Lilac Chaser
 
 ## Example  
-Here is an example for boot.iid:
+Here is an example for the boot.iid() function:
 
+```s
 library(animation)
 ## bootstrap for 20 random numbers from U(0, 1)
 par(mar = c(1.5, 3, 1, 0.1), cex.lab = 0.8, cex.axis = 0.8, mgp = c(2, 0.5, 0), tcl = -0.3)
 ani.options(nmax = 50)
 ## don't want the titles
 boot.iid(main = c("", ""))
-
+```
 
 ## Contact
 

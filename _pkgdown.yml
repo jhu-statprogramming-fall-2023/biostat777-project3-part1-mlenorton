@@ -6,5 +6,9 @@ template:
     pkgdown-nav-height: 100px
 navbar:
   bg: light
+footer:
+  structure:
+    left: developed_by
+    right: built_with
 
 
