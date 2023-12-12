@@ -1,5 +1,5 @@
 ---
-title: "Example data analysis"
+title: "Example analysis"
 output: 
   rmarkdown::html_vignette:
     code_folding: hide
@@ -124,7 +124,7 @@ zonann_temps_longer %>%
   theme_minimal() +
   labs(y = "Global temperature anomaly (°C)",
        title = "Global temperature anomaly from 1880 to 2022",
-       subtitle = "Global temperature has increased ~1.1°C since 1880",
+       subtitle = "Global temperature has increased ~1.1°C",
        caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)")
 
 
@@ -228,7 +228,7 @@ global_temp_df_plotting %>%
   geom_line() +
   labs(y = "Temperature anomaly (°C)",
        title = "Global temperature change from 1970 to 2022",
-       subtitle = "In recent years, global temperature has increased an average of ~0.02 °C per year.",
+       subtitle = "In recent years, global temperature has increased an average of ~0.02 °C per year",
        caption = "Data source: NASA GISS Surface Temperature Analysis (GISTEMP v4)",
        color = "Data type") +
    theme_minimal()
@@ -237,7 +237,7 @@ global_temp_df_plotting %>%
 
 
 ### Summary  
-In summary, we see that global temperature has increased more than 1°C from 1880 to 2022. In recent years (1970-present), the increase has been approximately linear, changing at a rate of ~0.02°C per year! Additionally, given the non-linear trends observed over the whole record, we might reasonably expect that warming rates will continue to accelerate in the near future.
+In summary, we see that average global temperature has increased more than 1°C from 1880 to 2022, but this varies by latitude. In recent years (1970-present), the global increase has been approximately linear, changing at a rate of ~0.02°C per year! Additionally, given the non-linear trends observed over the whole record, we might reasonably expect that warming rates will continue to accelerate in the future.
 
 
 ### Functions used
@@ -245,6 +245,6 @@ In summary, we see that global temperature has increased more than 1°C from 188
 dplyr: rename, filter, mutate, case_when, select  
 tidyr: pivot_longer  
 purrr: map, map_dbl  
-ggplot2: geom_smooth, geom_line, geom_point, geom_rect  
+ggplot2: geom_smooth, geom_line, geom_point, geom_rect, facet_wrap  
 animation: least.squares, brownian.motion, saveGIF  
 
